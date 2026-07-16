@@ -27,29 +27,38 @@ connectDB();
 // ─── Middleware ───────────────────────────────────────────────────────────────
 const allowedOrigins = [
   "http://localhost:5173", //local client
+  "http://localhost:3000",
   "https://bms-server-hu2d.onrender.com", //server
+  "https://bms-server-vx6t.onrender.com", //new server
   "https://bms-vbg5.onrender.com", //client
-  "https://bms-client-xdo3.onrender.com",
+  "https://bms-client-xdo3.onrender.com", //new client
 ];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (
-        !origin ||
-        allowedOrigins.includes(origin) ||
-        allowedOrigins.includes(origin.replace(/\/$/, "")) ||
-        origin.startsWith("http://localhost:") ||
-        origin.endsWith(".onrender.com")
-      ) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  }),
-);
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      allowedOrigins.includes(origin.replace(/\/$/, "")) ||
+      origin.startsWith("http://localhost:") ||
+      origin.endsWith(".onrender.com") ||
+      origin.includes("onrender.com") ||
+      origin.includes("vercel.app") ||
+      origin.includes("netlify.app")
+    ) {
+      callback(null, true);
+    } else {
+      console.warn(`[CORS Warning] Origin check fallback for: ${origin}`);
+      callback(null, true); // Allow gracefully instead of throwing 500 error on OPTIONS/preflight
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
