@@ -26,8 +26,10 @@ connectDB();
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 const allowedOrigins = [
-  "http://localhost:5173",
-  "https://bms-server-hu2d.onrender.com",
+  "http://localhost:5173", //local client
+  "https://bms-server-hu2d.onrender.com", //server
+  "https://bms-vbg5.onrender.com", //client
+  "https://bms-client-xdo3.onrender.com",
 ];
 
 app.use(
@@ -36,7 +38,9 @@ app.use(
       if (
         !origin ||
         allowedOrigins.includes(origin) ||
-        origin.startsWith("http://localhost:")
+        allowedOrigins.includes(origin.replace(/\/$/, "")) ||
+        origin.startsWith("http://localhost:") ||
+        origin.endsWith(".onrender.com")
       ) {
         callback(null, true);
       } else {
