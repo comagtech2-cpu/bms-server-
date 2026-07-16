@@ -12,8 +12,5 @@
     "resolveJsonModule": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
-  "references": [
-    { "path": "./prisma/tsconfig.seed.json" }
-  ]
+  "exclude": ["node_modules", "dist", "prisma"]
 }

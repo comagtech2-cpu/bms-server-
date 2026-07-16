@@ -81,7 +81,7 @@ router.put('/business', ownerOnly, async (req: AuthRequest, res: Response) => {
     if (!profile) {
       profile = await BusinessProfile.create({ _id: businessId, name: 'My Business', currency: '$', ...data });
     } else {
-      profile = await BusinessProfile.findByIdAndUpdate(businessId, data, { new: true });
+      profile = await BusinessProfile.findByIdAndUpdate(businessId, data, { returnDocument: 'after' });
     }
     res.json(profile);
   } catch (err) {
@@ -112,7 +112,7 @@ router.post('/upload-logo', ownerOnly, upload.single('logo'), async (req: AuthRe
       profile = await BusinessProfile.findByIdAndUpdate(
         businessId,
         { logo: logoUrl },
-        { new: true }
+        { returnDocument: 'after' }
       );
     }
 
@@ -186,7 +186,7 @@ router.put('/staff/:id', ownerOnly, validateId(), async (req: AuthRequest, res: 
     const user = await User.findOneAndUpdate(
       { _id: staffId, businessId: req.user!.businessId },
       updateData,
-      { new: true }
+      { returnDocument: 'after' }
     ).select('id name email role createdAt');
     
     if (!user) return res.status(404).json({ message: 'Staff member not found' }) as any;

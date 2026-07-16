@@ -59,7 +59,7 @@ router.put('/:id/read', async (req: AuthRequest, res: Response) => {
     const notification = await Notification.findOneAndUpdate(
       { _id: req.params.id, userId: req.user!.id },
       { read: true },
-      { new: true }
+      { returnDocument: 'after' }
     );
     if (!notification) return res.status(404).json({ message: 'Notification not found' }) as any;
     res.json(notification);

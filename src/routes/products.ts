@@ -167,7 +167,7 @@ router.put('/:id', validateId(), async (req: AuthRequest, res: Response) => {
     const product = await Product.findOneAndUpdate(
       { _id: req.params.id, businessId: req.user!.businessId },
       data,
-      { new: true }
+      { returnDocument: 'after' }
     ).populate('category', 'id name color');
     if (!product) return res.status(404).json({ message: 'Product not found' }) as any;
     res.json(product);

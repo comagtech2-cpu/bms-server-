@@ -224,7 +224,7 @@ router.put('/:id', validateId(), async (req: AuthRequest, res: Response) => {
     const customer = await Customer.findOneAndUpdate(
       { _id: req.params.id, businessId: new mongoose.Types.ObjectId(req.user!.businessId) },
       data,
-      { new: true }
+      { returnDocument: 'after' }
     );
     if (!customer) return res.status(404).json({ message: 'Customer not found' }) as any;
     res.json(customer);
@@ -251,7 +251,7 @@ router.post('/:id/payment', ownerOnly, validateId(), async (req: AuthRequest, re
     await session.withTransaction(async () => {
       await Payment.create(
         [{ creditRecordId, customerId, amount: payAmount, method, note, businessId: new mongoose.Types.ObjectId(req.user!.businessId) }],
-        { session }
+        { session, ordered: true }
       );
 
       await CreditRecord.findOneAndUpdate(

@@ -56,14 +56,14 @@ router.post('/restock', ownerOnly, async (req: AuthRequest, res: Response) => {
     await session.withTransaction(async () => {
       const created = await StockMovement.create(
         [{ productId, type: 'IN', qty, note: note || 'Restock', businessId: req.user!.businessId }],
-        { session }
+        { session, ordered: true }
       );
       movementDoc = created[0];
 
       productDoc = await Product.findOneAndUpdate(
         { _id: productId, businessId: req.user!.businessId },
         { $inc: { stock: qty } },
-        { new: true, session }
+        { returnDocument: 'after', session }
       ).populate('category', 'name color');
       
       if (!productDoc) {

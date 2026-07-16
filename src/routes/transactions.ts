@@ -110,7 +110,7 @@ router.post('/', async (req: AuthRequest, res: Response) => {
           note,
           businessId: req.user!.businessId,
         }],
-        { session }
+        { session, ordered: true }
       );
 
       const itemDocs = items.map((item) => ({
@@ -119,7 +119,7 @@ router.post('/', async (req: AuthRequest, res: Response) => {
         qty: item.qty,
         price: item.price,
       }));
-      await TransactionItem.create(itemDocs, { session });
+      await TransactionItem.create(itemDocs, { session, ordered: true });
 
       for (const item of items) {
         const product = await Product.findOne({ _id: item.productId, businessId: req.user!.businessId }).session(session);
@@ -140,7 +140,7 @@ router.post('/', async (req: AuthRequest, res: Response) => {
             note: `Sale #${transaction._id}`,
             businessId: req.user!.businessId,
           }],
-          { session }
+          { session, ordered: true }
         );
       }
 
@@ -152,7 +152,7 @@ router.post('/', async (req: AuthRequest, res: Response) => {
             amount: total,
             businessId: req.user!.businessId,
           }],
-          { session }
+          { session, ordered: true }
         );
         await Customer.findOneAndUpdate(
           { _id: customerId, businessId: req.user!.businessId },
