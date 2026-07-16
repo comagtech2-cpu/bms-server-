@@ -29,7 +29,7 @@ const allowedOrigins = [
   "http://localhost:5173", //local client
   "http://localhost:3000",
   "https://bms-server-hu2d.onrender.com", //server
-  "https://bms-client-xdo3.onrender.com", //new client
+  "https://bms-vbg5.onrender.com", //client
 ];
 
 const corsOptions: cors.CorsOptions = {
