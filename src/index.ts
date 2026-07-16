@@ -29,8 +29,6 @@ const allowedOrigins = [
   "http://localhost:5173", //local client
   "http://localhost:3000",
   "https://bms-server-hu2d.onrender.com", //server
-  "https://bms-server-vx6t.onrender.com", //new server
-  "https://bms-vbg5.onrender.com", //client
   "https://bms-client-xdo3.onrender.com", //new client
 ];
 
@@ -54,7 +52,13 @@ const corsOptions: cors.CorsOptions = {
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Accept",
+    "Origin",
+  ],
 };
 
 app.use(cors(corsOptions));
