@@ -97,6 +97,31 @@ router.put('/business', ownerOnly, async (req: AuthRequest, res: Response) => {
   }
 });
 
+// PUT /api/v1/settings/modules
+router.put('/modules', ownerOnly, async (req: AuthRequest, res: Response) => {
+  try {
+    const { modules } = z.object({
+      modules: z.record(z.string(), z.boolean())
+    }).parse(req.body);
+
+    const businessId = req.user!.businessId;
+    let profile = await BusinessProfile.findById(businessId);
+    if (!profile) {
+      profile = await BusinessProfile.create({ _id: businessId, name: 'My Business', currency: '$', modules });
+    } else {
+      profile = await BusinessProfile.findByIdAndUpdate(
+        businessId,
+        { modules },
+        { returnDocument: 'after' }
+      );
+    }
+    res.json(profile);
+  } catch (err) {
+    if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message }) as any;
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // POST /api/v1/settings/upload-logo
 router.post('/upload-logo', ownerOnly, upload.single('logo'), async (req: AuthRequest, res: Response) => {
   try {

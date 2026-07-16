@@ -87,6 +87,7 @@ export interface IBusinessProfile extends Document {
   vatRate?: number;
   isSuspended?: boolean;
   suspendedAt?: Date;
+  modules?: Record<string, boolean>;
 }
 const BusinessProfileSchema = new Schema<IBusinessProfile>({
   name: { type: String, default: 'My Business' },
@@ -100,6 +101,20 @@ const BusinessProfileSchema = new Schema<IBusinessProfile>({
   vatRate: { type: Number, default: 7.5 },
   isSuspended: { type: Boolean, default: false },
   suspendedAt: { type: Date, default: null },
+  modules: {
+    type: Map,
+    of: Boolean,
+    default: {
+      pos: true,
+      inventory: true,
+      customers: true,
+      credit: true,
+      reports: true,
+      staff: false,
+      cost_tracking: true,
+      stock_only: false,
+    },
+  },
 });
 applyTransform(BusinessProfileSchema);
 export const BusinessProfile = mongoose.model<IBusinessProfile>('BusinessProfile', BusinessProfileSchema);
