@@ -37,12 +37,19 @@ router.get('/business', async (req, res) => {
     } else if (jwtBusinessId && mongoose.Types.ObjectId.isValid(jwtBusinessId)) {
       profile = await BusinessProfile.findById(jwtBusinessId);
     } else {
-      profile = await BusinessProfile.findOne();
+      // If no slug or businessId is passed, and user is not logged in, return platform default profile
+      // Do NOT call BusinessProfile.findOne(), as that leaks the first tenant's name/logo ("The Bricks") to the general login page!
+      return res.json({
+        name: null,
+        logo: null,
+        currency: '$',
+      });
     }
+
     if (!profile) {
-      profile = await BusinessProfile.create({
-        name: 'CoMag Inventory',
-        slug: 'comag-inventory',
+      return res.json({
+        name: null,
+        logo: null,
         currency: '$',
       });
     }
